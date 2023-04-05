@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://beld01r6douaw"]
+
+[ext_resource type="Script" path="res://Godot-Mod-Manager/gmm.gd" id="1_allas"]
+
+[node name="Data" type="Node"]
+script = ExtResource("1_allas")
