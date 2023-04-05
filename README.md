@@ -1,6 +1,9 @@
 # Godot Mod Manager
 This mod manager is built to allow players of your game to easily create mods on top of it.
 
+Everything is crafted to allow people who have pretty much no coding experience to still be able to make a mod to change images, music, or variables, or add new content using things you define.
+In addition to this though it still retains the ability for people to go wild with code modding
+
 Main Features
 - Separation of data and behaviours to allow mods to override variable values
 - Ability for mods to override data, images, music, and scenes, and to extend scripts
