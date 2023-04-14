@@ -15,6 +15,8 @@ const INPUT_BOX_HEIGHT = 50
 const INPUT_BOX_MARGIN = 5
 const OUTPUT_BOX_MARGIN = 5
 
+var devmode = false
+
 func _ready():
 	get_tree().get_root().connect("size_changed", set_size)
 	set_size()
@@ -36,7 +38,7 @@ func setVisible():
 
 
 func setInvisible():
-	if (clearScreen): outputBox.text = "Debug Console"
+	if (clearScreen): outputBox.text = ""
 	inputBox.text = ""
 	self.visible = false
 	get_tree().paused = false
@@ -57,8 +59,9 @@ func _input(event):
 	if event is InputEventKey and event.is_pressed():
 		if InputMap.has_action("console") and event.is_action("console"):
 			toggleVisibility()
+			get_viewport().set_input_as_handled()
 		
-		if self.visible:
+		elif self.visible:
 			if event.keycode == KEY_UP:
 				goto_command_history(-1)
 			if event.keycode == KEY_DOWN:
@@ -66,6 +69,11 @@ func _input(event):
 
 
 func goto_command_history(offset):
+	if commandHistory.history.size() == 0:
+		inputBox.text = ""
+		inputBox.call_deferred("set_caret_column", 9999999)
+		return
+	
 	if(offset == -1):
 		if(commandhistoryline == null):
 			if(beginningElement):
@@ -102,15 +110,6 @@ func goto_command_history(offset):
 	inputBox.text = commandhistoryline.data
 	inputBox.call_deferred("set_caret_column", 9999999)
 
-
-#var builtIns = {
-#  "help": help(),
-#  "devmode": devmode(),
-#  "usermode": usermode()
-#}
-
-var devmode = false
-
 	
 func process_command(text: String):
 	outputText("[color=gold]> %s[/color]" % [text])
@@ -127,34 +126,17 @@ func process_command(text: String):
 	
 	#todo make it not static
 	
-	var commands = load("res://addons/godot_mod_manager/commands.gd").new() # TODO Change to accomodate mods
-	
-	var methods = commands.get_method_list()
-	
-	if(commands.has_method(commandWord) and not (commandWord.begins_with("d_") or commandWord.begins_with("u_") or commandWord.begins_with("h_"))):
-		for method in methods:
-			if method.name == commandWord:
-				if method.args.size() == words.size():
-					outputText(commands.callv(commandWord, words))
+	for command in Gmm.commands.values():
+		if command.name == commandWord or command.alias == commandWord:
+			if devmode and command.devmode or !devmode and command.usermode or !command.devmode and !command.usermode:
+				if command.args.size() >= words.size() and command.args.size() - command.default_args <= words.size():
+					outputText(command.file.callv(command.method_name, words))
 				else:
-					outputText("Invalid amount of arguments. Expected %d" % [method.args.size()])
-	else:
-		if(devmode and commands.has_method("d_" + commandWord)):
-			for method in methods:
-				if method.name == "d_" + commandWord:
-					if method.args.size() == words.size():
-						outputText(commands.callv("d_" + commandWord, words))
-					else:
-						outputText("Invalid amount of arguments. Expected %d" % [method.args.size()])
-		elif(not devmode and commands.has_method("u_" + commandWord)):
-			for method in methods:
-				if method.name == "u_" + commandWord:
-					if method.args.size() == words.size():
-						outputText(commands.callv("u_" + commandWord, words))
-					else:
-						outputText("Invalid amount of arguments. Expected %d" % [method.args.size()])
-		else: 
-			outputText("Invalid Command")
+					outputText("Invalid amount of arguments. Expected %d to %d" % [command.args.size() - command.default_args, command.args.size()])
+				return
+	
+	outputText("Invalid Command")
+
 
 func checkType(string, type):
 	if type == "integer":
@@ -170,7 +152,10 @@ func checkType(string, type):
 
 func outputText(text: String):
 	if(text != ""):
-		outputBox.text = str(outputBox.text, "\n", text)
+		if outputBox.text != "":
+			outputBox.text = str(outputBox.text, "\n", text)
+		else:
+			outputBox.text = str(outputBox.text, text)
 
 
 func _on_input_text_submitted(new_text: String):

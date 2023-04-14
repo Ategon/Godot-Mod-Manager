@@ -3,6 +3,7 @@ extends Node
 
 var data = {}
 var mods = {}
+var commands = {}
 
 @onready var console = $"Console"
 
@@ -33,6 +34,7 @@ func _ready():
 
 
 func get_mods() -> void:
+	commands = _readCommands("res://addons/godot_mod_manager/commands.gd")
 	mods = {}
 	
 	var res_dir = DirAccess.open("res://")
@@ -258,9 +260,60 @@ func _getNewlineFile(path: String) -> PackedStringArray:
 
 
 func _readCommands(path):
-	var localData = { "key": "commands" }
+	var localData = { }
 	
-	localData["File"] = load(path)
+	var file = load(path).new()
+	var command_list = file.get_script().get_script_method_list()
+	
+	for method in command_list:
+		if method.name:
+			var args: Array = method.args
+			var i = 0
+			var name = method.name
+			var help = ""
+			var devmode = false
+			var usermode = false
+			var alias = ""
+			var default_arg_amount = 0
+			var act_default_arg = 0
+			
+			if name.begins_with("h_"):
+				continue
+			elif name.begins_with("d_"):
+				devmode = true
+				name = name.substr(2)
+			elif name.begins_with("u_"):
+				usermode = true
+				name = name.substr(2)
+			
+			var non_default_args = args.size() - method.default_args.size()
+			
+			while i < args.size():
+				if i >= non_default_args:
+					default_arg_amount += 1
+					act_default_arg += 1
+					
+					if args[i].name == "help" or args[i].name == "alias":
+						act_default_arg -= 1
+						if args[i].name == "help":
+							help = method.default_args[default_arg_amount-1]
+						if args[i].name == "alias":
+							alias = method.default_args[default_arg_amount-1]
+						args.remove_at(i)
+						i -= 1
+				i += 1
+			
+			localData[name] = {
+				"name": name,
+				"method_name": method.name,
+				"args": args,
+				"help": help,
+				"alias": alias,
+				"file": file,
+				"devmode": devmode,
+				"usermode": usermode,
+				"default_args": act_default_arg,
+			}
 	
 	return localData
 	
