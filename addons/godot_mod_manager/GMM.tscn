@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://beld01r6douaw"]
+
+[ext_resource type="Script" path="res://addons/godot_mod_manager/gmm.gd" id="1_hhxoq"]
+
+[node name="GMM" type="Node"]
+script = ExtResource("1_hhxoq")
