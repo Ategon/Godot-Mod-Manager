@@ -1,25 +1,25 @@
 extends Resource
 
 
-func ping(help = "Prints out Pong to the console"):
+func ping(help = "Prints out Pong to the console", category = "Util"):
 	return "Pong!"
 
 
-func echo(text: String, help = "Prints out the given text to the console"):
+func echo(text: String, help = "Prints out the given text to the console", category = "Util"):
 	return text
 
 
-func clear(help = "Clears the console", alias = "cls"):
+func clear(help = "Clears the console", alias = "cls", category = "Util"):
 	Gmm.console.outputBox.text = ""
 	return ""
 
 
-func reload(help = "Reloads mod data", alias = "r"):
+func reload(help = "Reloads mod data", alias = "r", category = "Util"):
 	Gmm.reload_mods()
 	return "Reloaded mods"
 
 
-func command_history_max(max: int):
+func command_history_max(max: int, category = "Console"):
 	Gmm.console.setHistoryMax(max)
 	return "Successfully set history max to %s" % [max]
 
@@ -27,6 +27,26 @@ func command_history_max(max: int):
 func clear_history():
 	Gmm.console.clearHistory()
 	return "Cleared the command history"
+
+
+func set_input_template(template: String = "", alias = "sit"):
+	if template == "":
+		Gmm.console.input_template = "[color=gold]> %s[/color]"
+		return "Set template to the default"
+	else:
+		Gmm.console.input_template = template
+		return "Edited template"
+
+
+func set_input_box_height(height: int = -1, alias = "sibh"):
+	if height == -1:
+		Gmm.console.INPUT_BOX_HEIGHT = 50
+		Gmm.console.set_size()
+		return "Set height of the input box to the default"
+	else:
+		Gmm.console.INPUT_BOX_HEIGHT = height
+		Gmm.console.set_size()
+		return "Set height of the input box to %d" % [height]
 
 
 func console_exit_clear(state = null, help = "Sets whether to make the console clear all text when you exit it", alias = "cec"):

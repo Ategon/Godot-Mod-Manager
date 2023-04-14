@@ -276,6 +276,7 @@ func _readCommands(path):
 			var alias = ""
 			var default_arg_amount = 0
 			var act_default_arg = 0
+			var category = "Uncategorized"
 			
 			if name.begins_with("h_"):
 				continue
@@ -293,12 +294,14 @@ func _readCommands(path):
 					default_arg_amount += 1
 					act_default_arg += 1
 					
-					if args[i].name == "help" or args[i].name == "alias":
+					if args[i].name == "help" or args[i].name == "alias" or args[i].name == "category":
 						act_default_arg -= 1
 						if args[i].name == "help":
 							help = method.default_args[default_arg_amount-1]
 						if args[i].name == "alias":
 							alias = method.default_args[default_arg_amount-1]
+						if args[i].name == "category":
+							category = method.default_args[default_arg_amount-1]
 						args.remove_at(i)
 						i -= 1
 				i += 1
@@ -313,6 +316,7 @@ func _readCommands(path):
 				"devmode": devmode,
 				"usermode": usermode,
 				"default_args": act_default_arg,
+				"category": category
 			}
 	
 	return localData

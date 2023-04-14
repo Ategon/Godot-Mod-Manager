@@ -7,11 +7,12 @@ extends CanvasLayer
 
 var clearScreen = true
 var devMode = false
+var input_template = "[color=gold]> %s[/color]"
 
 var commandhistoryline = null
 var beginningElement = false
 
-const INPUT_BOX_HEIGHT = 50
+var INPUT_BOX_HEIGHT = 50
 const INPUT_BOX_MARGIN = 5
 const OUTPUT_BOX_MARGIN = 5
 
@@ -112,7 +113,7 @@ func goto_command_history(offset):
 
 	
 func process_command(text: String):
-	outputText("[color=gold]> %s[/color]" % [text])
+	outputText(input_template % [text])
 	
 	var words = text.split(" ", false)
 	words = Array(words)
@@ -130,6 +131,13 @@ func process_command(text: String):
 		if command.name == commandWord or command.alias == commandWord:
 			if devmode and command.devmode or !devmode and command.usermode or !command.devmode and !command.usermode:
 				if command.args.size() >= words.size() and command.args.size() - command.default_args <= words.size():
+					for i in range(0, words.size()):
+						if command.args[i].type == TYPE_INT:
+							if not words[i].is_valid_int():
+								outputText("An integer argument was not provided an integer")
+								return;
+							else:
+								words[i] = int(words[i])
 					outputText(command.file.callv(command.method_name, words))
 				else:
 					outputText("Invalid amount of arguments. Expected %d to %d" % [command.args.size() - command.default_args, command.args.size()])
