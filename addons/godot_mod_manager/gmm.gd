@@ -27,7 +27,7 @@ var CoreModFunctions = {
 
 func _ready():
 	get_mods()
-	#reload_mods()
+	reload_mods() # TODO Change to happen after selection
 
 
 ## Public Methods ##

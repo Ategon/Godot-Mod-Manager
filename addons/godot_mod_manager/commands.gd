@@ -146,12 +146,11 @@ func d_usermode(help = "Set your access to only being able to run regular comman
 	return "Removed Dev Mode"
 
 
-func d_editdata(path: String, value: String, category = "Data"):
-	var currentpos = Gmm.Data
+func d_edit_data(path: String, value: String, category = "Data"):
+	var currentpos = Gmm.data
 	var split_path = path.split("/")
 	var last_word = split_path[-1]
-	split_path.remove_at(2)
-	
+	split_path.remove_at(split_path.size() - 1)
 	for word in split_path:
 		if currentpos.has(word):
 			currentpos = currentpos[word]
@@ -165,9 +164,37 @@ func d_editdata(path: String, value: String, category = "Data"):
 	return "Set value of %s to %s" % [last_word, value]
 
 
-func d_adddata(path: String, value: String, category = "Data"):
-	pass
+func d_add_data(path: String, value: String, category = "Data"):
+	var currentpos = Gmm.data
+	var split_path = path.split("/")
+	var last_word = split_path[-1]
+	split_path.remove_at(split_path.size() - 1)
+	for word in split_path:
+		if currentpos.has(word):
+			currentpos = currentpos[word]
+		else:
+			return "[color=red]ERROR:[/color] %s is not a valid directory" % [word]
+	
+	if currentpos.has(last_word):
+		return "%s already exists" % [last_word]
+	else:
+		currentpos[last_word] = value
+	return "Set value of %s to %s" % [last_word, value]
 
 
-func d_removedata(path: String, category = "Data"):
-	pass
+func d_remove_data(path: String, category = "Data"):
+	var currentpos = Gmm.data
+	var split_path = path.split("/")
+	var last_word = split_path[-1]
+	split_path.remove_at(split_path.size() - 1)
+	for word in split_path:
+		if currentpos.has(word):
+			currentpos = currentpos[word]
+		else:
+			return "[color=red]ERROR:[/color] %s is not a valid directory" % [word]
+	
+	if currentpos.has(last_word):
+		currentpos.erase(last_word)
+	else:
+		return "%s is not a valid attribute" % [last_word]
+	return "Removed %s" % [last_word]
