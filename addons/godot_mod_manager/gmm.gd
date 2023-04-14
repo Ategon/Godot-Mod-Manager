@@ -2,6 +2,7 @@ extends Node
 # Main GMM file to handle loading and storing mod data
 
 var data = {}
+var mods = {}
 
 var FileFunctions = {
 	"changelog.txt": _readChangelog,
@@ -12,14 +13,42 @@ var FileFunctions = {
 	"*.png": _readPng,
 }
 
+var CoreModFunctions = {
+	"icon.png": _readIcon,
+	"manifest.json": _readManifest,
+	"README.md": _readReadme,
+}
+
 
 ## Built In Methods ##
 
 func _ready():
-	reload_mods()
+	get_mods()
+	#reload_mods()
 
 
 ## Public Methods ##
+
+
+func get_mods() -> void:
+	mods = {}
+	
+	var res_dir = DirAccess.open("res://")
+	if res_dir.dir_exists("mods"):
+		var mods_dir = DirAccess.open("res://mods")
+		for mod in mods_dir.get_directories():
+			var mod_dir = DirAccess.open("res://mods/" + mod)
+			var mod_data = {}
+			for core_mod_function in CoreModFunctions:
+				if mod_dir.file_exists(core_mod_function):
+					var new_entry = CoreModFunctions[core_mod_function].call("%s" % ["res://mods/" + mod + "/" + core_mod_function])
+					mod_data[new_entry.keys()[0]] = new_entry.values()[0]
+			if mod_data.has("manifest"):
+				if mod_data.manifest.has("name"):
+					if mods.has(mod_data.manifest.name):
+						push_warning("Attempted to add a second mod with name %s" % [mod_data.name])
+						continue
+					mods[mod_data.manifest.name] = mod_data
 
 # Delete cached mod data and then read in data from the project's parts folder
 # and the user's mods folder and set the mod data to that.
@@ -95,8 +124,26 @@ func _readPng(path):
 	return load(path)
 
 
+func _readIcon(path):
+	return {"icon": load(path)}
+
+
+func _readManifest(path):
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	var contents = JSON.parse_string(file.get_as_text())
+	file.close()
+	return {"manifest": contents}
+
+
+func _readReadme(path):
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	var contents = file.get_as_text()
+	file.close()
+	return {"readme": contents}
+
+
 func _readChangelog(path):
-	var entry = {"key": "Changelog"}
+	var entry = {"key": "changelog"}
 	var data = _getNewlineFile(path)
 	
 	var i = -1
