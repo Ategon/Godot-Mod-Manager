@@ -1,7 +1,5 @@
 # Godot Mod Manager
-* Note this is still a work in progress. Will not work out of the box yet
-* The mod manager will fully work when version 1.0 is released (you can see everything left in the issues tab)
-* Feel free to join the discord or submit pull requests if you want to help
+* Note this is still a work in progress. Will fully work when version 1.0 is released (you can see everything left in the issues tab)
 
 This mod manager is built to allow players of your game to easily create mods on top of it.
 
