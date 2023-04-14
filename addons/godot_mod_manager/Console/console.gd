@@ -125,8 +125,6 @@ func process_command(text: String):
 	
 	commandHistory.addHistory(text)
 	
-	#todo make it not static
-	
 	for command in Gmm.commands.values():
 		if command.name == commandWord or command.alias == commandWord:
 			if devmode and command.devmode or !devmode and command.usermode or !command.devmode and !command.usermode:

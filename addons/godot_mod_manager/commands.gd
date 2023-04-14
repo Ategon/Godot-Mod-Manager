@@ -24,12 +24,12 @@ func command_history_max(max: int, category = "Console"):
 	return "Successfully set history max to %s" % [max]
 
 
-func clear_history():
+func clear_history(category = "Console"):
 	Gmm.console.clearHistory()
 	return "Cleared the command history"
 
 
-func set_input_template(template: String = "", alias = "sit"):
+func set_input_template(template: String = "", alias = "sit", category = "Console"):
 	if template == "":
 		Gmm.console.input_template = "[color=gold]> %s[/color]"
 		return "Set template to the default"
@@ -38,7 +38,7 @@ func set_input_template(template: String = "", alias = "sit"):
 		return "Edited template"
 
 
-func set_input_box_height(height: int = -1, alias = "sibh"):
+func set_input_box_height(height: int = -1, alias = "sibh", category = "Console"):
 	if height == -1:
 		Gmm.console.INPUT_BOX_HEIGHT = 50
 		Gmm.console.set_size()
@@ -49,7 +49,7 @@ func set_input_box_height(height: int = -1, alias = "sibh"):
 		return "Set height of the input box to %d" % [height]
 
 
-func console_exit_clear(state = null, help = "Sets whether to make the console clear all text when you exit it", alias = "cec"):
+func console_exit_clear(state = null, help = "Sets whether to make the console clear all text when you exit it", alias = "cec", category = "Console"):
 	if state == null:
 		state = !Gmm.console.clearScreen
 	else:
@@ -64,14 +64,23 @@ func console_exit_clear(state = null, help = "Sets whether to make the console c
 	return "The console will now %s when it closes" % ["clear text" if state else "keep text"]
 
 
-func help(command: String = "", help = "Shows all available commands or information about a given command"):
+func help(command: String = "", help = "Shows all available commands or information about a given command", category = "Util"):
 	if command == "": # Command list
-		var string = ""
+		var dict = {}
+		
 		for name in Gmm.commands.keys():
 			if Gmm.console.devmode and Gmm.commands[name].devmode or !Gmm.console.devmode and Gmm.commands[name].usermode or !Gmm.commands[name].devmode and !Gmm.commands[name].usermode:
-				string += name + ", "
+				if dict.has(Gmm.commands[name].category):
+					dict[Gmm.commands[name].category] += ", " + name 
+				else:
+					dict[Gmm.commands[name].category] = name
+		
+		
+		var string = ""
+		for section in dict:
+			string += "- - %s - -\n%s\n" % [section, dict[section]]
 		if string != "":
-			string = string.substr(0, string.length() - 2)
+			string = string.substr(0, string.length() - 1) 
 		return string
 	else: # Info about command
 		if Gmm.commands.has(command):
@@ -85,7 +94,6 @@ func help(command: String = "", help = "Shows all available commands or informat
 					else:
 						args += "[%s]" % [string]
 					arg_amount += 1
-				print(args)
 				
 				return "%s%s\n%s%s" % [Gmm.commands[command].name, " %s" % [args] if args != "" else "", Gmm.commands[command].help, "\nAlias: %s" % [Gmm.commands[command].alias] if Gmm.commands[command].alias != "" else ""]
 			else:
@@ -102,17 +110,17 @@ func h_get_type(thing):
 		_:
 			return "Unknown"
 
-func u_devmode(help = "Get access to commands meant for development"):
+func u_devmode(help = "Get access to commands meant for development", category = "Util"):
 	Gmm.console.devmode = true
 	return "Set Dev Mode"
 
 
-func d_usermode(help = "Set your access to only being able to run regular commands"):
+func d_usermode(help = "Set your access to only being able to run regular commands", category = "Util"):
 	Gmm.console.devmode = false
 	return "Removed Dev Mode"
 
 
-func d_editdata(path: String, value: String):
+func d_editdata(path: String, value: String, category = "Data"):
 	var currentpos = Gmm.Data
 	var split_path = path.split("/")
 	var last_word = split_path[-1]
@@ -131,9 +139,9 @@ func d_editdata(path: String, value: String):
 	return "Set value of %s to %s" % [last_word, value]
 
 
-func d_adddata(path: String, value: String):
+func d_adddata(path: String, value: String, category = "Data"):
 	pass
 
 
-func d_removedata(path: String):
+func d_removedata(path: String, category = "Data"):
 	pass
