@@ -49,6 +49,28 @@ func set_input_box_height(height: int = -1, alias = "sibh", category = "Console"
 		return "Set height of the input box to %d" % [height]
 
 
+func set_input_box_margin(margin: int = -1, alias = "sibm", category = "Console"):
+	if margin == -1:
+		Gmm.console.INPUT_BOX_MARGIN = 5
+		Gmm.console.set_size()
+		return "Set height of the input box to the default"
+	else:
+		Gmm.console.INPUT_BOX_MARGIN = margin
+		Gmm.console.set_size()
+		return "Set margin of the input box to %d" % [margin]
+
+
+func set_output_box_margin(margin: int = -1, alias = "sobm", category = "Console"):
+	if margin == -1:
+		Gmm.console.OUTPUT_BOX_MARGIN = 5
+		Gmm.console.set_size()
+		return "Set height of the input box to the default"
+	else:
+		Gmm.console.OUTPUT_BOX_MARGIN = margin
+		Gmm.console.set_size()
+		return "Set margin of the output box to %d" % [margin]
+
+
 func console_exit_clear(state = null, help = "Sets whether to make the console clear all text when you exit it", alias = "cec", category = "Console"):
 	if state == null:
 		state = !Gmm.console.clearScreen
@@ -70,15 +92,19 @@ func help(command: String = "", help = "Shows all available commands or informat
 		
 		for name in Gmm.commands.keys():
 			if Gmm.console.devmode and Gmm.commands[name].devmode or !Gmm.console.devmode and Gmm.commands[name].usermode or !Gmm.commands[name].devmode and !Gmm.commands[name].usermode:
+				var string = name
+				if Gmm.console.devmode and Gmm.commands[name].devmode or !Gmm.console.devmode and Gmm.commands[name].usermode:
+					string = "[color=d1d1d1]%s[/color]" % [string]
+				
 				if dict.has(Gmm.commands[name].category):
-					dict[Gmm.commands[name].category] += ", " + name 
+					dict[Gmm.commands[name].category] += ", " + string 
 				else:
-					dict[Gmm.commands[name].category] = name
+					dict[Gmm.commands[name].category] = string
 		
 		
 		var string = ""
 		for section in dict:
-			string += "- - %s - -\n%s\n" % [section, dict[section]]
+			string += "[color=a1a1a1]- - %s - -[/color]\n%s\n" % [section, dict[section]]
 		if string != "":
 			string = string.substr(0, string.length() - 1) 
 		return string

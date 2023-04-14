@@ -13,8 +13,8 @@ var commandhistoryline = null
 var beginningElement = false
 
 var INPUT_BOX_HEIGHT = 50
-const INPUT_BOX_MARGIN = 5
-const OUTPUT_BOX_MARGIN = 5
+var INPUT_BOX_MARGIN = 5
+var OUTPUT_BOX_MARGIN = 5
 
 var devmode = false
 
@@ -25,10 +25,10 @@ func _ready():
 func set_size():
 	var screen_size = get_viewport().get_visible_rect().size
 	panel.size = screen_size
-	outputBox.size = Vector2(screen_size.x - OUTPUT_BOX_MARGIN*2, screen_size.y - INPUT_BOX_HEIGHT - OUTPUT_BOX_MARGIN*2)
+	outputBox.size = Vector2(screen_size.x - OUTPUT_BOX_MARGIN*2, screen_size.y - INPUT_BOX_HEIGHT - INPUT_BOX_MARGIN * 2 - OUTPUT_BOX_MARGIN*2)
 	outputBox.position = Vector2(OUTPUT_BOX_MARGIN, OUTPUT_BOX_MARGIN)
-	inputBox.size = Vector2(screen_size.x - INPUT_BOX_MARGIN*2, INPUT_BOX_HEIGHT - INPUT_BOX_MARGIN*2)
-	inputBox.position = Vector2(INPUT_BOX_MARGIN, screen_size.y - INPUT_BOX_HEIGHT)
+	inputBox.size = Vector2(screen_size.x - INPUT_BOX_MARGIN*2, INPUT_BOX_HEIGHT)
+	inputBox.position = Vector2(INPUT_BOX_MARGIN, screen_size.y - INPUT_BOX_HEIGHT - INPUT_BOX_MARGIN)
 
 func setVisible():
 	beginningElement = false
@@ -128,6 +128,27 @@ func process_command(text: String):
 	for command in Gmm.commands.values():
 		if command.name == commandWord or command.alias == commandWord:
 			if devmode and command.devmode or !devmode and command.usermode or !command.devmode and !command.usermode:
+				var quoted = false
+				var quoted_word = ""
+				var new_words = []
+				for i in range(0, words.size()):
+					var done = false
+					if words[i].begins_with("\"") and not quoted:
+						quoted = true
+						quoted_word = words[i].substr(1)
+						done = true
+					if quoted and not done:
+						quoted_word += " " + words[i]
+					if words[i].ends_with("\"") and quoted:
+						quoted = false
+						quoted_word = quoted_word.substr(0, quoted_word.length() - 1)
+						new_words.append(quoted_word)
+						done = true
+					
+					if not quoted and not done:
+						new_words.append(words[i])
+				words = new_words
+				
 				if command.args.size() >= words.size() and command.args.size() - command.default_args <= words.size():
 					for i in range(0, words.size()):
 						if command.args[i].type == TYPE_INT:
