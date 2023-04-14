@@ -209,7 +209,7 @@ func _getNewlineFile(path: String) -> PackedStringArray:
 
 
 func _readCommands(path):
-	var localData = { "key": "Commands" }
+	var localData = { "key": "commands" }
 	
 	localData["File"] = load(path)
 	
@@ -273,7 +273,7 @@ func _countIndentation(string: String):
 		else:
 			return tabs
 	
-	return tabs #temp?  
+	return tabs
 
 
 func _readTxt(path):
