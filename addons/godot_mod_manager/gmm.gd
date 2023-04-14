@@ -4,6 +4,8 @@ extends Node
 var data = {}
 var mods = {}
 
+var Console = null
+
 var FileFunctions = {
 	"changelog.txt": _readChangelog,
 	"commands.gd": _readCommands,
