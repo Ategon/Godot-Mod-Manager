@@ -5,6 +5,8 @@
 
 This mod manager is built to allow players of your game to easily create mods on top of it.
 
+See the [Wiki](https://github.com/Ategon/Godot-Mod-Manager/wiki) for instructions to add the GMM to your game or on how to make mods
+
 Everything is crafted to allow people who have pretty much no coding experience to still be able to make a mod to change images, music, or variables, or add new content using things you define.
 In addition to this though it still retains the ability for people to go wild with code modding
 
