@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddd6hohc187h4"]
+
+[ext_resource type="Script" path="res://addons/godot_mod_manager/Selection/selection.gd" id="1_vqu13"]
+
+[node name="Selection" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_vqu13")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0745098, 0.0745098, 0.0745098, 1)
+
+[node name="ContinueButton" type="Button" parent="."]
+offset_left = 434.0
+offset_top = 591.0
+offset_right = 513.0
+offset_bottom = 622.0
+text = "Continue"
+
+[node name="CheckButton" type="CheckButton" parent="."]
+offset_left = 333.0
+offset_top = 548.0
+offset_right = 634.0
+offset_bottom = 579.0
+text = "Dont show on game boot up"
+
+[connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]

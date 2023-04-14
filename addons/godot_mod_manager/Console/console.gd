@@ -57,7 +57,7 @@ func setHistoryMax(max):
 
 
 func _input(event):
-	if event is InputEventKey and event.is_pressed():
+	if event is InputEventKey and event.is_pressed() and Gmm.selection.visible == false:
 		if InputMap.has_action("console") and event.is_action("console"):
 			toggleVisibility()
 			get_viewport().set_input_as_handled()

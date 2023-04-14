@@ -6,6 +6,7 @@ var mods = {}
 var commands = {}
 
 @onready var console = $"Console"
+@onready var selection = $"Selection"
 
 var FileFunctions = {
 	"commands.gd": _readCommands,
