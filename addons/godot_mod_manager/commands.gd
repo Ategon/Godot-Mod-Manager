@@ -14,7 +14,7 @@ func clear(help = "Clears the console", alias = "cls"):
 	return ""
 
 
-func reload(help = "Reloads mod data", alias = ["r", "rel"]):
+func reload(help = "Reloads mod data", alias = "r"):
 	Gmm.reload_mods()
 	return "Reloaded mods"
 
@@ -29,12 +29,58 @@ func clear_history():
 	return "Cleared the command history"
 
 
+func console_exit_clear(state = null, help = "Sets whether to make the console clear all text when you exit it", alias = "cec"):
+	if state == null:
+		state = !Gmm.console.clearScreen
+	else:
+		if state == "true":
+			state = true
+		elif state == "false":
+			state = false
+		else:
+			return "Invalid state provided"
+	
+	Gmm.console.clearScreen = state
+	return "The console will now %s when it closes" % ["clear text" if state else "keep text"]
+
+
 func help(command: String = "", help = "Shows all available commands or information about a given command"):
 	if command == "": # Command list
-		return ""
+		var string = ""
+		for name in Gmm.commands.keys():
+			if Gmm.console.devmode and Gmm.commands[name].devmode or !Gmm.console.devmode and Gmm.commands[name].usermode or !Gmm.commands[name].devmode and !Gmm.commands[name].usermode:
+				string += name + ", "
+		if string != "":
+			string = string.substr(0, string.length() - 2)
+		return string
 	else: # Info about command
-		return ""
+		if Gmm.commands.has(command):
+			if Gmm.console.devmode and Gmm.commands[command].devmode or !Gmm.console.devmode and Gmm.commands[command].usermode or !Gmm.commands[command].devmode and !Gmm.commands[command].usermode:
+				var args = ""
+				var arg_amount = 0
+				for arg in Gmm.commands[command].args:
+					var string = "%s: %s" % [arg.name, h_get_type(arg.type)]
+					if arg_amount < Gmm.commands[command].args.size() - Gmm.commands[command].default_args:
+						args += "<%s>" % [string]
+					else:
+						args += "[%s]" % [string]
+					arg_amount += 1
+				print(args)
+				
+				return "%s%s\n%s%s" % [Gmm.commands[command].name, " %s" % [args] if args != "" else "", Gmm.commands[command].help, "\nAlias: %s" % [Gmm.commands[command].alias] if Gmm.commands[command].alias != "" else ""]
+			else:
+				return "Invalid command"
+		else:
+			return "Invalid command"
 
+func h_get_type(thing):
+	match (thing):
+		TYPE_STRING:
+			return "String"
+		TYPE_INT:
+			return "Int"
+		_:
+			return "Unknown"
 
 func u_devmode(help = "Get access to commands meant for development"):
 	Gmm.console.devmode = true
