@@ -8,7 +8,6 @@ var commands = {}
 @onready var console = $"Console"
 
 var FileFunctions = {
-	"changelog.txt": _readChangelog,
 	"commands.gd": _readCommands,
 	"*.gd": _readScriptResource,
 	"*.txt": _readTxt,
@@ -144,119 +143,6 @@ func _readReadme(path):
 	var contents = file.get_as_text()
 	file.close()
 	return {"readme": contents}
-
-
-func _readChangelog(path):
-	var entry = {"key": "changelog"}
-	var data = _getNewlineFile(path)
-	
-	var i = -1
-	var splitData = []
-	for line in data:
-		if(line.begins_with("---")):
-			i += 1
-			splitData.push_back([])
-		else:
-			splitData[i].push_back(line)
-	
-	for dataLine in splitData:  
-		var localEntry = _readEntry(dataLine)
-		if(!localEntry.has("Version")): continue
-		entry[localEntry.Version] = localEntry
-	return entry
-	
-## Given an unparsed input entry of an array of strings, convert it to an object
-## using the parsing algorithm
-func _readEntry(input: PackedStringArray):
-	var entry = {}
-	var indentationLevels: PackedStringArray = []
-	var currentIndentation: int = 0
-	
-	for line in input:
-		var splitLine: PackedStringArray = line.strip_edges().split(":")
-		var actualIndentation: int = _countIndentation(line)
-		
-		if (actualIndentation < currentIndentation):
-			currentIndentation = actualIndentation
-			indentationLevels = indentationLevels.slice(0, currentIndentation)
-		elif (currentIndentation < actualIndentation):
-			# throw error
-			pass
-		
-		match splitLine.size():
-			1:
-				if(splitLine[0].ends_with("[]")):
-					
-					var i = 0
-					var position = entry
-					while(i < actualIndentation - 1):
-						if(position and position.has(indentationLevels[i])):
-							position = position.get(indentationLevels[i])
-							i += 1
-						else:
-							#error
-							break
-					
-					if(indentationLevels.size() > 0 and !position.has(indentationLevels[i])):
-						position[indentationLevels[i]] = {}
-					
-					
-					var lineName = splitLine[0].substr(0, splitLine[0].length() - 2)
-					indentationLevels.push_back(lineName)
-					currentIndentation += 1
-				elif(splitLine[0].begins_with("-")):
-					var i = 0
-					var position = entry
-
-					while(i < actualIndentation - 1):
-						position = position.get(indentationLevels[i])
-						i += 1
-					
-					if(!position.has(indentationLevels[i])):
-						position[indentationLevels[i]] = []
-					position = position.get(indentationLevels[i])
-					
-					position.push_back(splitLine[0].substr(2))
-				else:
-					var i = 0
-					var position = entry
-
-					while(i < actualIndentation - 1):
-						position = position.get(indentationLevels[i])
-						i += 1
-					
-					if(!position.has(indentationLevels[i])):
-						position[indentationLevels[i]] = []
-					i += 1
-					position = position.get(indentationLevels[i])
-					
-					position.Values.push_back(splitLine[0])
-			2:
-				var i = 0
-				var position = entry
-				
-				while(i < actualIndentation - 1):
-					position = position.get(indentationLevels[i])
-					i += 1
-				
-				if(indentationLevels.size() > 0):
-					if(!position.has(indentationLevels[i])):
-						position[indentationLevels[i]] = {}
-					i += 1
-					position = position.get(indentationLevels[i])
-				
-				position[splitLine[0]] = splitLine[1].strip_edges()
-			_:
-				# throw error
-				pass
-	return entry
-
-## Read the contents of a file provided a path and then return the contents as
-## an array of strings delimited by newlines
-func _getNewlineFile(path: String) -> PackedStringArray:
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
-	var content: String = file.get_as_text()
-	return content.split("\n", false)
 
 
 func _readCommands(path):
