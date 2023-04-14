@@ -24,6 +24,11 @@ func command_history_max(max: int):
 	return "Successfully set history max to %s" % [max]
 
 
+func clear_history():
+	Gmm.Console.clearHistory()
+	return "Cleared the command history"
+
+
 func help(command: String = "", help = "Shows all available commands or information about a given command"):
 	if command == "": # Command list
 		return ""
