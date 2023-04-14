@@ -4,7 +4,7 @@ extends Node
 var data = {}
 var mods = {}
 
-var Console = null
+@onready var console = $"Console"
 
 var FileFunctions = {
 	"changelog.txt": _readChangelog,

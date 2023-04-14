@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://beld01r6douaw"]
+[gd_scene load_steps=3 format=3 uid="uid://beld01r6douaw"]
 
 [ext_resource type="Script" path="res://addons/godot_mod_manager/gmm.gd" id="1_4fswk"]
+[ext_resource type="PackedScene" uid="uid://dbpm5gv620gwx" path="res://addons/godot_mod_manager/Console/console.tscn" id="2_5p268"]
 
 [node name="Gmm" type="Node"]
 script = ExtResource("1_4fswk")
+
+[node name="Console" parent="." instance=ExtResource("2_5p268")]
+visible = false

@@ -10,7 +10,7 @@ func echo(text: String, help = "Prints out the given text to the console"):
 
 
 func clear(help = "Clears the console", alias = "cls"):
-	Gmm.Console.outputBox.text = ""
+	Gmm.console.outputBox.text = ""
 	return ""
 
 
@@ -20,12 +20,12 @@ func reload(help = "Reloads mod data", alias = ["r", "rel"]):
 
 
 func command_history_max(max: int):
-	Gmm.Console.setHistoryMax(max)
+	Gmm.console.setHistoryMax(max)
 	return "Successfully set history max to %s" % [max]
 
 
 func clear_history():
-	Gmm.Console.clearHistory()
+	Gmm.console.clearHistory()
 	return "Cleared the command history"
 
 
@@ -37,12 +37,12 @@ func help(command: String = "", help = "Shows all available commands or informat
 
 
 func u_devmode(help = "Get access to commands meant for development"):
-	Gmm.Console.devmode = true
+	Gmm.console.devmode = true
 	return "Set Dev Mode"
 
 
 func d_usermode(help = "Set your access to only being able to run regular commands"):
-	Gmm.Console.devmode = false
+	Gmm.console.devmode = false
 	return "Removed Dev Mode"
 
 
