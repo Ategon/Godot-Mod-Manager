@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://oky0te3y2k5g"]
+[gd_scene load_steps=2 format=3 uid="uid://oky0te3y2k5g"]
+
+[ext_resource type="Script" path="res://addons/godot_mod_manager/Selection/profile_container.gd" id="1_w3lqs"]
 
 [node name="Profile" type="HBoxContainer"]
+script = ExtResource("1_w3lqs")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
@@ -11,5 +14,68 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Control" type="Control" parent="."]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
+
+[node name="DeleteButton" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -47.0
+offset_right = -37.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Delete Profile"
+
+[node name="RenameButton" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -164.0
+offset_top = -90.0
+offset_right = -37.0
+offset_bottom = -59.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Rename Profile"
+
+[node name="Button3" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -165.0
+offset_top = -188.0
+offset_right = -38.0
+offset_bottom = -157.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Select All"
+
+[node name="Button4" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -167.0
+offset_top = -143.0
+offset_right = -40.0
+offset_bottom = -112.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Deselect All"
+
+[connection signal="pressed" from="Control/DeleteButton" to="." method="_on_delete_button_pressed"]
+[connection signal="pressed" from="Control/RenameButton" to="." method="_on_rename_button_pressed"]

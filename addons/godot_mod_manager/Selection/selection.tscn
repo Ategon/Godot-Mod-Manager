@@ -53,5 +53,60 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Dont show on game boot up"
 
+[node name="NamePopup" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="NamePopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.278431)
+
+[node name="MarginContainer" type="MarginContainer" parent="NamePopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -197.0
+offset_top = -69.0
+offset_right = 189.0
+offset_bottom = 78.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect2" type="ColorRect" parent="NamePopup/MarginContainer"]
+layout_mode = 2
+color = Color(0.152941, 0.152941, 0.152941, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NamePopup/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="NamePopup/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Enter a Name"
+
+[node name="TextEdit" type="TextEdit" parent="NamePopup/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+placeholder_text = "Name"
+
+[node name="Button" type="Button" parent="NamePopup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Submit"
+
 [connection signal="tab_selected" from="TabBar" to="." method="_on_tab_bar_tab_selected"]
 [connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="text_changed" from="NamePopup/MarginContainer/VBoxContainer/TextEdit" to="." method="_on_text_edit_text_changed"]
+[connection signal="pressed" from="NamePopup/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

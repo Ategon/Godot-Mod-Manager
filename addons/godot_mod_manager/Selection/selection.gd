@@ -5,14 +5,41 @@ extends CanvasLayer
 
 @onready var color_rect = $"ColorRect"
 @onready var tab_bar = $"TabBar" as TabContainer
+@onready var name_popup = $"NamePopup" as Control
+@onready var name_text = $"NamePopup/MarginContainer/VBoxContainer/TextEdit" as TextEdit
+@onready var name_button = $"NamePopup/MarginContainer/VBoxContainer/Button" as Button
 
 var next_profile = 1
+
+var profiles = []
+
+
+func save_profiles():
+	var file = FileAccess.open("user://mod_profiles.dat", FileAccess.WRITE)
+	file.store_line(JSON.stringify(profiles, "\t"))
+	file.close()
+
+
+func load_profiles():
+	var file = FileAccess.open("user://mod_profiles.dat", FileAccess.READ)
+	if file:
+		var content = file.get_as_text()
+		print(content)
+		file.close()
+		return JSON.parse_string(content)
+	else:
+		return [{"name": "Profile 1"}]
+
+func _init():
+	profiles = load_profiles()
 
 func _ready():
 	get_tree().paused = true
 	
-	for profile in tab_bar.get_children():
-		add_mods_profile(profile)
+	for object in profiles:
+		_create_tab(object)
+	
+	tab_bar.current_tab = 0
 
 
 func add_mods_profile(profile):
@@ -32,6 +59,7 @@ func add_mods_profile(profile):
 
 
 func _on_continue_button_pressed():
+	save_profiles()
 	visible = false
 	get_tree().paused = false
 	Gmm.reload_mods()
@@ -39,11 +67,46 @@ func _on_continue_button_pressed():
 
 func _on_tab_bar_tab_selected(tab):
 	if tab == tab_bar.get_tab_count() - 1:
-		var new_tab = profile_container.instantiate()
-		new_tab.name = "Profile %d" % [next_profile]
-		next_profile += 1
-		add_mods_profile(new_tab)
-		tab_bar.add_child(new_tab)
-		tab_bar.move_child(tab_bar.get_child(tab), tab_bar.get_tab_count() - 1)
-		tab_bar.current_tab = tab
+		_add_profile()
 	pass
+
+func _add_profile():
+	var profile = {
+		"name": "New Profile"
+	}
+	profiles.push_back(profile)
+	_create_tab(profile)
+	tab_bar.current_tab = tab_bar.get_tab_count() - 2
+
+func _create_tab(object):
+	var new_tab = profile_container.instantiate()
+	new_tab.name = object.name
+	add_mods_profile(new_tab)
+	tab_bar.add_child(new_tab)
+	tab_bar.move_child(tab_bar.get_child(tab_bar.get_tab_count() - 2), tab_bar.get_tab_count() - 1)
+
+func delete_selected_profile():
+	profiles.remove_at(tab_bar.current_tab)
+	tab_bar.remove_child(tab_bar.get_current_tab_control())
+	if tab_bar.current_tab > 0:
+		tab_bar.current_tab = tab_bar.current_tab - 1
+
+var new_name
+
+func rename_selected_profile():
+	name_popup.visible = true
+	name_text.text = tab_bar.get_current_tab_control().name
+	new_name = name_text.text
+
+func _on_button_pressed():
+	profiles[tab_bar.current_tab].name = new_name
+	tab_bar.get_current_tab_control().name = new_name
+	name_popup.visible = false
+
+
+func _on_text_edit_text_changed():
+	new_name = name_text.text
+	if new_name == "" and not name_button.disabled:
+		name_button.disabled = true
+	elif new_name != "" and name_button.disabled:
+		name_button.disabled = false
