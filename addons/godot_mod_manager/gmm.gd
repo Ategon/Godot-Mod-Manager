@@ -58,6 +58,9 @@ func get_mods() -> void:
 func reload_mods() -> void:
 	data = {} # Remove all old mod data
 	
+	if selection == null:
+		selection = get_node("Selection")
+	
 	var selected_profile = selection.profiles[selection.selected_profile]
 	
 	# Open part folder from project (Ignore if none) and if exists set mod data to it

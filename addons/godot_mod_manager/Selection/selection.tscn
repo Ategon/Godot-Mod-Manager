@@ -39,7 +39,7 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Continue"
 
-[node name="CheckButton" type="CheckButton" parent="."]
+[node name="DontShow" type="CheckButton" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -108,5 +108,6 @@ text = "Submit"
 
 [connection signal="tab_selected" from="TabBar" to="." method="_on_tab_bar_tab_selected"]
 [connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="toggled" from="DontShow" to="." method="_on_dont_show_toggled"]
 [connection signal="text_changed" from="NamePopup/MarginContainer/VBoxContainer/TextEdit" to="." method="_on_text_edit_text_changed"]
 [connection signal="pressed" from="NamePopup/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

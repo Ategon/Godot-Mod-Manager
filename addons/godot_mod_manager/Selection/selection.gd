@@ -8,38 +8,77 @@ extends CanvasLayer
 @onready var name_popup = $"NamePopup" as Control
 @onready var name_text = $"NamePopup/MarginContainer/VBoxContainer/TextEdit" as TextEdit
 @onready var name_button = $"NamePopup/MarginContainer/VBoxContainer/Button" as Button
+@onready var dont_show_toggle = $"DontShow"
+@onready var continue_button = $"ContinueButton"
 
 var next_profile = 1
 
 var profiles = []
 var selected_profile = 0
+var dont_show := false
+
+func _input(event):
+	if event is InputEventKey and event.is_pressed():
+		if InputMap.has_action("mods") and event.is_action("mods"):
+			get_tree().paused = true
+			visible = true
+			get_viewport().set_input_as_handled()
 
 func save_profiles():
 	var file = FileAccess.open("user://mod_profiles.dat", FileAccess.WRITE)
 	file.store_line(JSON.stringify(profiles, "\t"))
 	file.close()
+	
+	var file2 = FileAccess.open("user://gmm_settings.dat", FileAccess.WRITE)
+	file2.store_var(dont_show)
+	file2.store_var(selected_profile)
+	file2.close()
 
 
 func load_profiles():
 	var file = FileAccess.open("user://mod_profiles.dat", FileAccess.READ)
 	if file:
 		var content = file.get_as_text()
-		print(content)
 		file.close()
-		return JSON.parse_string(content)
+		profiles = JSON.parse_string(content)
 	else:
-		return [{"name": "Profile 1"}]
+		profiles = [{"name": "Profile 1"}]
+	
+	var file2 = FileAccess.open("user://gmm_settings.dat", FileAccess.READ)
+	if file2:
+		if not file2.eof_reached(): 
+			dont_show = file2.get_var()
+		if not file2.eof_reached(): 
+			selected_profile = file2.get_var()
+		file2.close()
 
 func _init():
-	profiles = load_profiles()
+	load_profiles()
 
 func _ready():
-	get_tree().paused = true
-	
 	for object in profiles:
 		_create_tab(object)
 	
-	tab_bar.current_tab = 0
+	dont_show_toggle.button_pressed = dont_show
+	
+	if not InputMap.has_action("mods"):
+		dont_show_toggle.visible = false
+		dont_show_toggle.button_pressed = false
+		dont_show = false
+	
+	if Gmm.mods.size() == 0 and not profiles.any(func(x): x.has("mods")):
+		visible = false
+		return
+	
+	if dont_show:
+		tab_bar.current_tab = selected_profile
+		save_profiles()
+		visible = false
+		Gmm.reload_mods()
+	else:
+		get_tree().paused = true
+
+		tab_bar.current_tab = 0
 
 
 func add_mods_profile(profile, object):
@@ -72,6 +111,7 @@ func _on_continue_button_pressed():
 func _on_tab_bar_tab_selected(tab):
 	if tab == tab_bar.get_tab_count() - 1:
 		_add_profile()
+		continue_button.disabled = false
 	selected_profile = tab
 	pass
 
@@ -95,6 +135,8 @@ func delete_selected_profile():
 	tab_bar.remove_child(tab_bar.get_current_tab_control())
 	if tab_bar.current_tab > 0:
 		tab_bar.current_tab = tab_bar.current_tab - 1
+	if tab_bar.get_tab_count() == 1:
+		continue_button.disabled = true
 
 var new_name
 
@@ -134,3 +176,7 @@ func disable_mod(name):
 			pass
 	else:
 		pass
+
+
+func _on_dont_show_toggled(button_pressed):
+	dont_show = button_pressed

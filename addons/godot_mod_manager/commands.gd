@@ -198,3 +198,15 @@ func d_remove_data(path: String, category = "Data"):
 	else:
 		return "%s is not a valid attribute" % [last_word]
 	return "Removed %s" % [last_word]
+
+func show_mod_window():
+	return "Not Implemented"
+
+func enable_mod(name: String):
+	return "Not Implemented"
+
+func disable_mod(name: String):
+	return "Not Implemented"
+
+func mods():
+	return "Not Implemented"
