@@ -14,18 +14,44 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0745098, 0.0745098, 0.0745098, 1)
 
+[node name="TabBar" type="TabContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -108.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="+ Add Profile" type="Control" parent="TabBar"]
+layout_mode = 2
+
 [node name="ContinueButton" type="Button" parent="."]
-offset_left = 434.0
-offset_top = 591.0
-offset_right = 513.0
-offset_bottom = 622.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -39.0
+offset_top = -51.0
+offset_right = 40.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "Continue"
 
 [node name="CheckButton" type="CheckButton" parent="."]
-offset_left = 333.0
-offset_top = 548.0
-offset_right = 634.0
-offset_bottom = 579.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -149.0
+offset_top = -91.0
+offset_right = 152.0
+offset_bottom = -60.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "Dont show on game boot up"
 
+[connection signal="tab_selected" from="TabBar" to="." method="_on_tab_bar_tab_selected"]
 [connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]

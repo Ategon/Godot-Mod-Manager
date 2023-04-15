@@ -25,9 +25,8 @@ var CoreModFunctions = {
 
 ## Built In Methods ##
 
-func _ready():
+func _init():
 	get_mods()
-	reload_mods() # TODO Change to happen after selection
 
 
 ## Public Methods ##

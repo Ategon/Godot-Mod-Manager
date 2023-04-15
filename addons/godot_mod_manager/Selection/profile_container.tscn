@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://oky0te3y2k5g"]
+
+[node name="Profile" type="HBoxContainer"]
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Control" type="Control" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2

@@ -5,6 +5,10 @@ extends CanvasLayer
 @onready var commandHistory = $"CommandHistory"
 @onready var panel = $"Panel"
 
+const DEFAULT_INPUT_BOX_HEIGHT = 50
+const DEFAULT_INPUT_BOX_MARGIN = 20
+const DEFAULT_OUTPUT_BOX_MARGIN = 20
+
 var clearScreen = true
 var devMode = false
 var input_template = "[color=gold]> %s[/color]"
@@ -12,9 +16,9 @@ var input_template = "[color=gold]> %s[/color]"
 var commandhistoryline = null
 var beginningElement = false
 
-var INPUT_BOX_HEIGHT = 50
-var INPUT_BOX_MARGIN = 5
-var OUTPUT_BOX_MARGIN = 5
+var input_box_height = DEFAULT_INPUT_BOX_HEIGHT
+var input_box_margin = DEFAULT_INPUT_BOX_MARGIN
+var output_box_margin = DEFAULT_OUTPUT_BOX_MARGIN
 
 var devmode = false
 
@@ -25,10 +29,10 @@ func _ready():
 func set_size():
 	var screen_size = get_viewport().get_visible_rect().size
 	panel.size = screen_size
-	outputBox.size = Vector2(screen_size.x - OUTPUT_BOX_MARGIN*2, screen_size.y - INPUT_BOX_HEIGHT - INPUT_BOX_MARGIN * 2 - OUTPUT_BOX_MARGIN*2)
-	outputBox.position = Vector2(OUTPUT_BOX_MARGIN, OUTPUT_BOX_MARGIN)
-	inputBox.size = Vector2(screen_size.x - INPUT_BOX_MARGIN*2, INPUT_BOX_HEIGHT)
-	inputBox.position = Vector2(INPUT_BOX_MARGIN, screen_size.y - INPUT_BOX_HEIGHT - INPUT_BOX_MARGIN)
+	outputBox.size = Vector2(screen_size.x - output_box_margin*2, screen_size.y - input_box_height - input_box_margin * 2 - output_box_margin*2)
+	outputBox.position = Vector2(output_box_margin, output_box_margin)
+	inputBox.size = Vector2(screen_size.x - input_box_margin*2, input_box_height)
+	inputBox.position = Vector2(input_box_margin, screen_size.y - input_box_height - input_box_margin)
 
 func setVisible():
 	beginningElement = false
@@ -54,6 +58,10 @@ func toggleVisibility():
 
 func setHistoryMax(max):
 	commandHistory.max_history = max
+
+
+func clearHistory():
+	commandHistory.history = LinkedList.new()
 
 
 func _input(event):

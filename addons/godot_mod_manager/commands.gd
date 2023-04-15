@@ -40,33 +40,33 @@ func set_input_template(template: String = "", alias = "sit", category = "Consol
 
 func set_input_box_height(height: int = -1, alias = "sibh", category = "Console"):
 	if height == -1:
-		Gmm.console.INPUT_BOX_HEIGHT = 50
+		Gmm.console.input_box_height = Gmm.console.DEFAULT_INPUT_BOX_HEIGHT
 		Gmm.console.set_size()
 		return "Set height of the input box to the default"
 	else:
-		Gmm.console.INPUT_BOX_HEIGHT = height
+		Gmm.console.input_box_height = height
 		Gmm.console.set_size()
 		return "Set height of the input box to %d" % [height]
 
 
 func set_input_box_margin(margin: int = -1, alias = "sibm", category = "Console"):
 	if margin == -1:
-		Gmm.console.INPUT_BOX_MARGIN = 5
+		Gmm.console.input_box_margin = Gmm.console.DEFAULT_INPUT_BOX_MARGIN
 		Gmm.console.set_size()
 		return "Set height of the input box to the default"
 	else:
-		Gmm.console.INPUT_BOX_MARGIN = margin
+		Gmm.console.input_box_margin = margin
 		Gmm.console.set_size()
 		return "Set margin of the input box to %d" % [margin]
 
 
 func set_output_box_margin(margin: int = -1, alias = "sobm", category = "Console"):
 	if margin == -1:
-		Gmm.console.OUTPUT_BOX_MARGIN = 5
+		Gmm.console.output_box_margin = Gmm.console.DEFAULT_OUTPUT_BOX_MARGIN
 		Gmm.console.set_size()
 		return "Set height of the input box to the default"
 	else:
-		Gmm.console.OUTPUT_BOX_MARGIN = margin
+		Gmm.console.output_box_margin = margin
 		Gmm.console.set_size()
 		return "Set margin of the output box to %d" % [margin]
 
