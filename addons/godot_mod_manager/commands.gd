@@ -14,7 +14,7 @@ func clear(help = "Clears the console", alias = "cls", category = "Util"):
 	return ""
 
 
-func reload(help = "Reloads mod data", alias = "r", category = "Util"):
+func reload(help = "Reloads mod data", alias = "r", category = "Mods"):
 	Gmm.reload_mods()
 	return "Reloaded mods"
 
@@ -199,14 +199,41 @@ func d_remove_data(path: String, category = "Data"):
 		return "%s is not a valid attribute" % [last_word]
 	return "Removed %s" % [last_word]
 
-func show_mod_window():
-	return "Not Implemented"
+func show_mod_window(category = "Mods"):
+	Gmm.selection.show_mod_selection()
+	return "Showing mod selection window"
 
-func enable_mod(name: String):
-	return "Not Implemented"
+func enable_mod(name: String, category = "Mods"):
+	var status = Gmm.selection.select_mod(name)
+	if status:
+		Gmm.reload_mods()
+		return "Enabled %s and reloaded mods" % [name]
+	else:
+		return "[color=red]ERROR:[/color] %s is not a valid mod name" % [name]
 
-func disable_mod(name: String):
-	return "Not Implemented"
+func disable_mod(name: String, category = "Mods"):
+	var status = Gmm.selection.deselect_mods(name)
+	if status:
+		Gmm.reload_mods()
+		return "Disabled %s and reloaded mods" % [name]
+	else:
+		return "[color=red]ERROR:[/color] %s is not a valid mod name" % [name]
 
-func mods():
-	return "Not Implemented"
+func profile(help = "Show the name of the currently selected profile", category = "Mods"):
+	return Gmm.selection.tab_bar.get_current_tab_control().name
+
+func mods(help = "Show a list of all currently enabled mods in the selected profile", category = "Mods"):
+	var profile = Gmm.selection.profiles[Gmm.selection.selected_profile]
+	if profile.has("mods"):
+		if profile.mods.size() != 0:
+			return profile.mods.reduce(
+				func(accum, mod):
+					if accum == null:
+						return mod
+					else:
+						return accum + ", " + mod
+			)
+		else:
+			return "No Mods"
+	else:
+		return "No Mods"

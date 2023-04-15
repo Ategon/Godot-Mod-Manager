@@ -47,7 +47,7 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "Rename Profile"
 
-[node name="Button3" type="Button" parent="Control"]
+[node name="SelectAllButton" type="Button" parent="Control"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -62,7 +62,7 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "Select All"
 
-[node name="Button4" type="Button" parent="Control"]
+[node name="DeselectAllButton" type="Button" parent="Control"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -79,3 +79,5 @@ text = "Deselect All"
 
 [connection signal="pressed" from="Control/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="Control/RenameButton" to="." method="_on_rename_button_pressed"]
+[connection signal="pressed" from="Control/SelectAllButton" to="." method="_on_select_all_button_pressed"]
+[connection signal="pressed" from="Control/DeselectAllButton" to="." method="_on_deselect_all_button_pressed"]

@@ -20,9 +20,12 @@ var dont_show := false
 func _input(event):
 	if event is InputEventKey and event.is_pressed():
 		if InputMap.has_action("mods") and event.is_action("mods"):
-			get_tree().paused = true
-			visible = true
+			show_mod_selection()
 			get_viewport().set_input_as_handled()
+
+func show_mod_selection():
+	get_tree().paused = true
+	visible = true
 
 func save_profiles():
 	var file = FileAccess.open("user://mod_profiles.dat", FileAccess.WRITE)
@@ -180,3 +183,45 @@ func disable_mod(name):
 
 func _on_dont_show_toggled(button_pressed):
 	dont_show = button_pressed
+
+func select_mod(name) -> bool:
+	for tab_child in tab_bar.get_children():
+		if tab_child.name == profiles[tab_bar.current_tab].name:
+			var scroll_container = tab_child.get_node("ScrollContainer")
+			var vbox_container = scroll_container.get_node("VBoxContainer")
+			for mod_control in vbox_container.get_children():
+				if mod_control.get_node("Name").text == name:
+					mod_control.get_node("CheckButton").button_pressed = true
+					enable_mod(mod_control.get_node("Name").text)
+					return true
+	return false
+
+func deselect_mod(name) -> bool:
+	for tab_child in tab_bar.get_children():
+		if tab_child.name == profiles[tab_bar.current_tab].name:
+			var scroll_container = tab_child.get_node("ScrollContainer")
+			var vbox_container = scroll_container.get_node("VBoxContainer")
+			for mod_control in vbox_container.get_children():
+				if mod_control.get_node("Name").text == name:
+					mod_control.get_node("CheckButton").button_pressed = true
+					enable_mod(mod_control.get_node("Name").text)
+					return true
+	return false
+
+func select_all():
+	for tab_child in tab_bar.get_children():
+		if tab_child.name == profiles[tab_bar.current_tab].name:
+			var scroll_container = tab_child.get_node("ScrollContainer")
+			var vbox_container = scroll_container.get_node("VBoxContainer")
+			for mod_control in vbox_container.get_children():
+				mod_control.get_node("CheckButton").button_pressed = true
+				enable_mod(mod_control.get_node("Name").text)
+
+func deselect_all():
+	for tab_child in tab_bar.get_children():
+		if tab_child.name == profiles[tab_bar.current_tab].name:
+			var scroll_container = tab_child.get_node("ScrollContainer")
+			var vbox_container = scroll_container.get_node("VBoxContainer")
+			for mod_control in vbox_container.get_children():
+				mod_control.get_node("CheckButton").button_pressed = false
+				disable_mod(mod_control.get_node("Name").text)

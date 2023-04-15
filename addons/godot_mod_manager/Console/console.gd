@@ -161,13 +161,13 @@ func process_command(text: String):
 					for i in range(0, words.size()):
 						if command.args[i].type == TYPE_INT:
 							if not words[i].is_valid_int():
-								outputText("An integer argument was not provided an integer")
+								outputText("[color=red]ERROR:[/color] An integer argument was not provided an integer")
 								return;
 							else:
 								words[i] = int(words[i])
 					outputText(command.file.callv(command.method_name, words))
 				else:
-					outputText("Invalid amount of arguments. Expected %d to %d" % [command.args.size() - command.default_args, command.args.size()])
+					outputText("[color=red]ERROR:[/color] Invalid amount of arguments. Expected %d to %d" % [command.args.size() - command.default_args, command.args.size()])
 				return
 	
 	outputText("Invalid Command")
