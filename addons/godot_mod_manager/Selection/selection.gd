@@ -12,7 +12,7 @@ extends CanvasLayer
 var next_profile = 1
 
 var profiles = []
-
+var selected_profile = 0
 
 func save_profiles():
 	var file = FileAccess.open("user://mod_profiles.dat", FileAccess.WRITE)
@@ -42,7 +42,7 @@ func _ready():
 	tab_bar.current_tab = 0
 
 
-func add_mods_profile(profile):
+func add_mods_profile(profile, object):
 	for mod in Gmm.mods:
 		if not profile is HBoxContainer: continue
 		var scroll_container = profile.get_child(0)
@@ -52,6 +52,10 @@ func add_mods_profile(profile):
 		mod_entry.get_node("Name").text = Gmm.mods[mod].manifest.name if Gmm.mods[mod].manifest.has("name") else "No Name"
 		mod_entry.get_node("Description").text = Gmm.mods[mod].manifest.description if Gmm.mods[mod].manifest.has("description") else "No Description"
 		mod_entry.get_node("Version").text = Gmm.mods[mod].manifest.version if Gmm.mods[mod].manifest.has("version") else "No Version"
+		
+		if (object.has("mods") && object.mods.has(Gmm.mods[mod].manifest.name)):
+			print("aaa")
+			mod_entry.get_node("CheckButton").button_pressed = true
 		if Gmm.mods[mod].has("icon"): 
 			mod_entry.get_node("TextureRect").texture = Gmm.mods[mod].icon
 		
@@ -68,6 +72,7 @@ func _on_continue_button_pressed():
 func _on_tab_bar_tab_selected(tab):
 	if tab == tab_bar.get_tab_count() - 1:
 		_add_profile()
+	selected_profile = tab
 	pass
 
 func _add_profile():
@@ -81,7 +86,7 @@ func _add_profile():
 func _create_tab(object):
 	var new_tab = profile_container.instantiate()
 	new_tab.name = object.name
-	add_mods_profile(new_tab)
+	add_mods_profile(new_tab, object)
 	tab_bar.add_child(new_tab)
 	tab_bar.move_child(tab_bar.get_child(tab_bar.get_tab_count() - 2), tab_bar.get_tab_count() - 1)
 
@@ -110,3 +115,22 @@ func _on_text_edit_text_changed():
 		name_button.disabled = true
 	elif new_name != "" and name_button.disabled:
 		name_button.disabled = false
+
+
+func enable_mod(name):
+	if profiles[tab_bar.current_tab].has("mods"):
+		if profiles[tab_bar.current_tab]["mods"].has(name):
+			pass
+		else:
+			profiles[tab_bar.current_tab]["mods"].push_back(name)
+	else:
+		profiles[tab_bar.current_tab]["mods"] = [name]
+
+func disable_mod(name):
+	if profiles[tab_bar.current_tab].has("mods"):
+		if profiles[tab_bar.current_tab]["mods"].has(name):
+			profiles[tab_bar.current_tab]["mods"].remove_at(profiles[tab_bar.current_tab]["mods"].find(name))
+		else:
+			pass
+	else:
+		pass

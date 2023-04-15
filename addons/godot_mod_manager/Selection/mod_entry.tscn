@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bddkvjfbnbky0"]
+[gd_scene load_steps=2 format=3 uid="uid://bddkvjfbnbky0"]
+
+[ext_resource type="Script" path="res://addons/godot_mod_manager/Selection/mod_entry.gd" id="1_vindm"]
 
 [node name="ModEntry" type="Control"]
 custom_minimum_size = Vector2(0, 100)
@@ -6,6 +8,7 @@ layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
+script = ExtResource("1_vindm")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -76,3 +79,5 @@ offset_bottom = 39.0
 grow_horizontal = 0
 grow_vertical = 2
 expand_mode = 1
+
+[connection signal="toggled" from="CheckButton" to="." method="_on_check_button_toggled"]

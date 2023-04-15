@@ -58,6 +58,8 @@ func get_mods() -> void:
 func reload_mods() -> void:
 	data = {} # Remove all old mod data
 	
+	var selected_profile = selection.profiles[selection.selected_profile]
+	
 	# Open part folder from project (Ignore if none) and if exists set mod data to it
 	var res_dir = DirAccess.open("res://")
 	if res_dir.dir_exists("parts"):
@@ -70,6 +72,7 @@ func reload_mods() -> void:
 		
 		# Merge all project mods into the mod data. TODO: Change to handle dependencies
 		for mod_data in project_mods_data:
+			if not selected_profile.has("mods") or not selected_profile.mods.any(func(x): x == mod_data): continue
 			data = _mergeObjects(project_mods_data[mod_data], data)
 	
 	# Open mod folder on player machine (Create if none)
@@ -80,6 +83,7 @@ func reload_mods() -> void:
 	
 	# Merge all mods into the mod data. TODO: Change to handle dependencies
 	for mod_data in mods_data:
+		if not selected_profile.has("mods") or not selected_profile.mods.any(func(x): x == mod_data): continue
 		data = _mergeObjects(mods_data[mod_data], data)
 	
 	# Reload all nodes that have a reload function
